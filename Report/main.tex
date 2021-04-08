@@ -71,6 +71,135 @@
 \addcontentsline{toc}{section}{Question 1}
 \setcounter{equation}{0}
 
+\subsection*{Instructions for running the code:}
+\begin{itemize}[noitemsep]
+    \item After extracting submitted file, look for a directory named \texttt{q1}, and \texttt{cd} (change directory) to it.
+    \item Run the file \texttt{q1.m}.
+    \item The plots can be found in \texttt{./plots/}.
+\end{itemize}
+
+\bigskip
+
+\subsection*{Choosing Dictionary and CS-solvers parameters}
+We know that $\boldsymbol{f_1}$ is sparse in DCT basis and $\boldsymbol{f_2}$ is sparse in Time domain. \\
+However $\boldsymbol{f} = \boldsymbol{f_1} + \boldsymbol{f_2}$ is sparse in neither DCT basis nor Time domain. \\
+So, we create a over-complete dictionary $\boldsymbol{A}$ by concatenating DCT basis and Identity basis (matrix). \\
+$\boldsymbol{f}$ is sparsely representable in $\boldsymbol{A}$.\\
+
+The OMP implementation provided by sir as part of Assignment 1 solution (matches with our implementation for Assignment 1 but with error checks) was used (present \texttt{omp\_error.m}). \\
+The parameters to the function are $\boldsymbol{A}$, $\boldsymbol{f}$ and $\sigma$. \\
+Line 4 in \texttt{omp\_error.m} uses $\sigma$ to calculate error bound $e = n \sigma^2$. \\
+
+\bigskip
+
+\subsection*{Explaining Code}
+\subsubsection*{Creating the Over-complete Dictionary}
+\begin{verbatim}
+% DCT matrix
+dctmat = dctmtx(256);
+% Over-complete dictionary for cosine + spikes
+A = [dctmat eye(256)];
+\end{verbatim}
+
+\subsubsection*{Generating $\boldsymbol{f}$}
+Here, \texttt{s} is the sparsity level of $\boldsymbol{f_1}$ and $\boldsymbol{f_2}$.
+\begin{verbatim}
+ind1 = randi(256, s, 1);
+coeff1 = zeros(256,1);
+coeff1(ind1) = rand(s,1)*100;
+ind2 = randi(256, s, 1);
+coeff2 = zeros(256,1);
+coeff2(ind2) = rand(s,1)*100;
+
+f1 = dctmat*coeff1;
+f2 = coeff2;
+f = f1 + f2;
+
+sigma = 0.01 * abs(mean(f));
+f = f + randn(256,1)*sigma;
+\end{verbatim}
+
+\subsubsection*{Reconstruction of $\boldsymbol{f_1}$ and $\boldsymbol{f_2}$}
+\begin{verbatim}
+x = omp_error(A, f, sigma);
+coeff1_recon = x(1:256);
+coeff2_recon = x(257:512);
+
+f1_recon = dctmat*coeff1_recon;
+f2_recon = coeff2_recon;
+\end{verbatim}
+
+\bigskip
+
+\subsection*{Varying $\sigma$ and fixed sparsity level $s$}
+\subsubsection*{Plots:}
+\begin{figure}[H]
+    \centering
+    \begin{floatrow}
+      \ffigbox[\FBwidth]
+      {\caption{Reconstruction Error in $\boldsymbol{f_1}$}}
+      {\includegraphics[scale=0.3]{error1_sigma.jpg}}
+      
+      \ffigbox[\FBwidth]
+      {\caption{Reconstruction Error in $\boldsymbol{f_2}$}}
+      {\includegraphics[scale=0.3]{error2_sigma.jpg}}
+    \end{floatrow}
+\end{figure}
+
+\subsubsection*{Comments:}
+\begin{itemize}
+    \item $\sigma$ ranges from 0.001 to 0.1 $\times$ (average value of $\boldsymbol{f_1} + \boldsymbol{f_2}$).
+    \item We can clearly see increase in reconstruction error for both $\boldsymbol{f_1}$ and $\boldsymbol{f_2}$ as $\sigma$ increases.
+\end{itemize}
+
+\subsection*{Varying sparsity level $s$ with fixed $\sigma$}
+\subsubsection*{Plots:}
+\begin{figure}[H]
+    \centering
+    \begin{floatrow}
+      \ffigbox[\FBwidth]
+      {\caption{Reconstruction Error in $\boldsymbol{f_1}$}}
+      {\includegraphics[scale=0.3]{error1_sparsity.jpg}}
+      
+      \ffigbox[\FBwidth]
+      {\caption{Reconstruction Error in $\boldsymbol{f_2}$}}
+      {\includegraphics[scale=0.3]{error2_sparsity.jpg}}
+    \end{floatrow}
+\end{figure}
+
+\subsubsection*{Comments:}
+\begin{itemize}
+    \item Sparsity level $s$ ranges from 1 to 100.
+    \item Reconstruction error is negligible/acceptable till around sparsity level of about 64 (25\% of N=256). \\
+    We see a sudden rise in error reaching 1 by sparsity level of 70.
+    \item If we zoom into the first part of the plot, we will see a very slow rise (not consistent but visible) in reconstruction error for both $\boldsymbol{f_1}$ and $\boldsymbol{f_2}$ with increase in sparsity level $s$.
+\end{itemize}
+
+\subsection*{Varying magnitude ratio $k$}
+\subsubsection*{Plots:}
+\begin{figure}[H]
+    \centering
+    \begin{floatrow}
+      \ffigbox[\FBwidth]
+      {\caption{Reconstruction Error in $\boldsymbol{f_1}$}}
+      {\includegraphics[scale=0.3]{error1_k.jpg}}
+      
+      \ffigbox[\FBwidth]
+      {\caption{Reconstruction Error in $\boldsymbol{f_2}$}}
+      {\includegraphics[scale=0.3]{error2_k.jpg}}
+    \end{floatrow}
+\end{figure}
+
+\subsubsection*{Comments:}
+\begin{itemize}
+    \item The magnitude of $\boldsymbol{f_2}$ is $k$ times that of $\boldsymbol{f_1}$
+    \item We can clearly see increase in reconstruction error for both $\boldsymbol{f_1}$ as $k$ increases. \\
+    However, the reconstruction error for $\boldsymbol{f_2}$ is almost consistent at around 0.001.
+    \item The possible explanation of this could be the decrease in significance of $\boldsymbol{f_1}$ in $\boldsymbol{f}$, so the error bound in OMP exits when the error value of $\boldsymbol{f_2}$ is less as error value of $\boldsymbol{f_1}$ becomes less significant with increase in $k$.
+    \item To add to that, $\sigma$ is based on the average value of $\boldsymbol{f_1} + \boldsymbol{f_2}$, which increases while the average value of $\boldsymbol{f_1}$ remains same, thus giving similar results as the experiment when we were varying $\sigma$. \\
+    For $\boldsymbol{f_2}$, increase in $\sigma$ is counter-acted by the increase in average value of $\boldsymbol{f_2}$, thus giving us almost consistent reconstruction error.
+\end{itemize}
+
 
 \newpage
 \section*{Question 2}
@@ -335,6 +464,105 @@ $c^{'}_{K}$ is a constant independent of $\bs{x}$, equal to $\sqrt{\dfrac{1+\del
 \section*{Question 3}
 \addcontentsline{toc}{section}{Question 3}
 \setcounter{equation}{0}
+
+\textbf{Given:} \\
+Dictionary $\boldsymbol{D}$ contains images $\boldsymbol{d_k} \ (k \in \{1, \dots, M\})$, each of same dimension as images of class $\mathcal{S}$. \\
+All images $\boldsymbol{s_i}$ in class $\mathcal{S}$ are sparsely represented in dictionary $\boldsymbol{D}$, i.e., $\boldsymbol{s_i} = \sum_{k=1}^{M} \alpha_k \boldsymbol{d_k}$ where $\{\alpha_k\}_{k=1}^{k=M}$ is a sparse vector. \\
+
+\medskip
+
+\subsection*{(a)}
+Class $\mathcal{S}_1$ which consists of images obtained by applying a known derivative filter to the images in $\mathcal{S}$. \\
+Image $\boldsymbol{x_i}$ in Class $\mathcal{S}_1$ is obtained by applying a known derivative filter $\boldsymbol{d}$ to the image $\boldsymbol{s_i}$ in $\mathcal{S}$. \\
+\begin{equation*}
+    \begin{aligned}
+        \boldsymbol{x_i} &= \boldsymbol{d} \boldsymbol{*} \boldsymbol{s_i} \\
+            &= \boldsymbol{d} \boldsymbol{*} \sum_{k=1}^{M} \alpha_k \boldsymbol{d_k} \\
+            &= \sum_{k=1}^{M} \alpha_k (\boldsymbol{d} \boldsymbol{*} \boldsymbol{d_k}) \ \ (\text{Distributive Property of Convolution)}\\
+    \end{aligned}
+\end{equation*}
+As we know that $\{\alpha_k\}_{k=1}^{k=M}$ is a sparse vector. \\
+All images $\boldsymbol{x_i}$ in class $\mathcal{S}_1$ are sparsely represented in dictionary $\boldsymbol{D_1} = \{\boldsymbol{d} \boldsymbol{*} \boldsymbol{d_k} | \boldsymbol{d_k} \in \boldsymbol{D}\}$. \\
+
+\medskip
+
+\subsection*{(b)}
+Class $\mathcal{S}_2$ which consists of images obtained by rotating a subset of the images in class $\mathcal{S}$ by a known fixed angle $\alpha$, and the other subset by another known fixed angle $\beta$. \\
+Rotating of an image by angle $\theta$ is equivalent to pre-multiplying original with a matrix $\boldsymbol{A_\theta}$\footnote{refer to comments at the end of question for construction}. \\
+\begin{equation*}
+    \begin{aligned}
+        \boldsymbol{x_i} &= \boldsymbol{A_\theta} \boldsymbol{s_i} \\
+            &= \boldsymbol{A_\theta} \sum_{k=1}^{M} \alpha_k \boldsymbol{d_k} \\
+            &= \sum_{k=1}^{M} \alpha_k (\boldsymbol{A_\theta} \boldsymbol{d_k}) \\
+    \end{aligned}
+\end{equation*}
+As we know that $\{\alpha_k\}_{k=1}^{k=M}$ is a sparse vector. \\
+Image $\boldsymbol{x_i}$ in Class $\mathcal{S}_2$ is obtained by rotating the image $\boldsymbol{s_i}$ in $\mathcal{S}$ by either $\alpha$ or $\beta$, it can be represented as sparse linear combination of $\boldsymbol{A_\alpha} \boldsymbol{d_k}$ or $\boldsymbol{A_\beta} \boldsymbol{d_k}$. \\
+All images $\boldsymbol{x_i}$ in class $\mathcal{S}_2$ are sparsely represented in dictionary $\boldsymbol{D_2} = \{\boldsymbol{A_\alpha} \boldsymbol{d_k} | \boldsymbol{d_k} \in \boldsymbol{D}\} \cup \{\boldsymbol{A_\beta} \boldsymbol{d_k} | \boldsymbol{d_k} \in \boldsymbol{D}\}$. \\
+
+\medskip
+
+\subsection*{(c)}
+Class $\mathcal{S}_3$ which consists of images obtained by applying an intensity transformation $I^i_{new}(x,y) = \alpha (I^i_{old}(x,y))^2 + \beta (I^i_{old}(x,y)) + \gamma$ to the images in $\mathcal{S}$, where $\alpha,\beta,\gamma$ are known. \\
+Image $\boldsymbol{x_i}$ in Class $\mathcal{S}_3$ is obtained by by applying an intensity transformation to $\boldsymbol{s_i}$ in $\mathcal{S}$. \\
+\begin{equation*}
+    \begin{aligned}
+        \boldsymbol{s_i}(x, y) &= \sum_{k=1}^{M} \alpha_k \boldsymbol{d_k}(x,y) \ \ (\Longleftrightarrow \boldsymbol{s_i} = \sum_{k=1}^{M} \alpha_k \boldsymbol{d_k}) \\
+        \boldsymbol{x_i}(x, y) &= \alpha(\boldsymbol{s_i}(x, y))^2 + \beta(\boldsymbol{s_i}(x, y)) + \gamma \\
+            &= \alpha(\sum_{k=1}^{M} \alpha_k \boldsymbol{d_k}(x,y))^2 + \beta(\sum_{k=1}^{M} \alpha_k \boldsymbol{d_k}(x,y)) + (\gamma) \\
+            &= (\sum_{k=1}^{M} \alpha \alpha_k^2 (\boldsymbol{d_k}(x,y))^2) + (\sum_{k=1}^{M} \sum_{l>k}^{M} \alpha \alpha_k \alpha_l (\boldsymbol{d_k}(x,y))(\boldsymbol{d_l}(x,y))) + (\sum_{k=1}^{M} \beta \alpha_k (\boldsymbol{d_k}(x,y))) + (\gamma (\boldsymbol{1})) \\
+            &(\Longleftrightarrow \boldsymbol{x_i} = (\sum_{k=1}^{M} \alpha \alpha_k^2 (\boldsymbol{d_k}.\wedge2)) + (\sum_{k=1}^{M} \sum_{l>k}^{M} \alpha \alpha_k \alpha_l (\boldsymbol{d_k}.*\boldsymbol{d_l})) + (\sum_{k=1}^{M} \beta \alpha_k \boldsymbol{d_k}) + (\gamma \boldsymbol{1}) \\
+    \end{aligned}
+\end{equation*}
+As we know that $\{\alpha_k\}_{k=1}^{k=M}$ is a sparse vector, $\{\alpha \alpha_k^2\}_{k=1}^{k=M} \cup \{\alpha \alpha_k \alpha_l\}_{k=1,l>k}^{k=M,l=M} \cup \{\beta \alpha_k\}_{k=1}^{k=M} \cup \{\gamma\}$ is also a sparse vector (percentage sparsity doesn't increase). \\
+All images $\boldsymbol{x_i}$ in class $\mathcal{S}_3$ are sparsely represented in dictionary $\boldsymbol{D_3} = \boldsymbol{D} \cup \{\boldsymbol{1}, \text{vector contains all 1s}\} \cup \{\boldsymbol{d_k}.\wedge2 | \boldsymbol{d_k} \in \boldsymbol{D}\} \cup \{\boldsymbol{d_k}.*\boldsymbol{d_l} | \boldsymbol{d_k}, \boldsymbol{d_l} \in \boldsymbol{D}, l > k\}$. \\
+
+\medskip
+
+\subsection*{(d)}
+Class $\mathcal{S}_4$ which consists of images obtained by applying a known blur kernel to the images in $\mathcal{S}$. \\
+Image $\boldsymbol{x_i}$ in Class $\mathcal{S}_4$ is obtained by applying a known blur kernel $\boldsymbol{\omega}$ to the image $\boldsymbol{s_i}$ in $\mathcal{S}$. \\
+\begin{equation*}
+    \begin{aligned}
+        \boldsymbol{x_i} &= \boldsymbol{\omega} \boldsymbol{*} \boldsymbol{s_i} \\
+            &= \boldsymbol{\omega} \boldsymbol{*} \sum_{k=1}^{M} \alpha_k \boldsymbol{d_k} \\
+            &= \sum_{k=1}^{M} \alpha_k (\boldsymbol{\omega} \boldsymbol{*} \boldsymbol{d_k}) \ \ (\text{Distributive Property of Convolution)}\\
+    \end{aligned}
+\end{equation*}
+As we know that $\{\alpha_k\}_{k=1}^{k=M}$ is a sparse vector. \\
+All images $\boldsymbol{x_i}$ in class $\mathcal{S}_4$ are sparsely represented in dictionary $\boldsymbol{D_4} = \{\boldsymbol{\omega} \boldsymbol{*} \boldsymbol{d_k} | \boldsymbol{d_k} \in \boldsymbol{D}\}$. \\
+
+\medskip
+
+\subsection*{(e)}
+Class $\mathcal{S}_5$ which consists of images obtained by applying a blur kernel which is known to be a linear combination of blur kernels belonging to a known set $\mathcal{B}$, to the images in $\mathcal{S}$. \\
+Image $\boldsymbol{x_i}$ in Class $\mathcal{S}_5$ is obtained by applying a blur kernel $\boldsymbol{\omega}$ which is known to be a linear combination\footnote{I have assumed that we don't know this linear combination and it may vary for different $\boldsymbol{x_i}$s.} of blur kernels belonging to a known set $\mathcal{B}$, to the image $\boldsymbol{s_i}$ in $\mathcal{S}$. \\
+\begin{equation*}
+    \begin{aligned}
+        \boldsymbol{\omega} &= \sum_{j=1}^{b} \beta_j \boldsymbol{b_j} \ \  (\boldsymbol{b_j} \in \mathcal{B}) \\
+        \boldsymbol{x_i} &= \boldsymbol{\omega} \boldsymbol{*} \boldsymbol{s_i} \\
+            &= \boldsymbol{\omega} \boldsymbol{*} \sum_{k=1}^{M} \alpha_k \boldsymbol{d_k} \\
+            &= \sum_{k=1}^{M} \alpha_k (\boldsymbol{\omega} \boldsymbol{*} \boldsymbol{d_k}) &\ \ (\text{Distributive Property of Convolution)}\\
+            &= \sum_{k=1}^{M} \alpha_k ((\sum_{j=1}^{b} \beta_j \boldsymbol{b_j}) \boldsymbol{*} \boldsymbol{d_k}) \\
+            &= \sum_{k=1}^{M} \alpha_k (\sum_{j=1}^{b} \beta_j (\boldsymbol{b_j} \boldsymbol{*} \boldsymbol{d_k})) &\ \ (\text{Distributive Property of Convolution)}\\
+            &= \sum_{k=1}^{M} \sum_{j=1}^{b} \alpha_k \beta_j (\boldsymbol{b_j} \boldsymbol{*} \boldsymbol{d_k}) \\
+    \end{aligned}
+\end{equation*}
+As we know that $\{\alpha_k\}_{k=1}^{k=M}$ is a sparse vector, $\{\alpha_k \beta_j\}_{k=1, j=1}^{k=M, j=b}$ is also a sparse vector (percentage sparsity doesn't increase). \\
+All images $\boldsymbol{x_i}$ in class $\mathcal{S}_5$ are sparsely represented in dictionary $\boldsymbol{D_5} = \{\boldsymbol{b_j} \boldsymbol{*} \boldsymbol{d_k} | \boldsymbol{d_k} \in \boldsymbol{D}, \boldsymbol{b_j} \in \mathcal{B} \}$. \\ Dictionary contains $Mb$ images.
+
+\subsection*{Comments:}
+\begin{itemize}
+    \item Distributive Property of Convolution has been used in (a), (d) and (e). \\ Reference: \url{http://ccc.inaoep.mx/~a.morales/DSP/pdf/DSP_4_convolution_prop.pdf}, page 36.
+    \item In (c) and (e), number of atoms present in the dictionary has increased significantly, however, percentage sparsity is maintained (in fact, decreased in (c)).
+    \item Derivative filter uses convolution, so does blur kernel, so the results are similar. \\
+    Reference: \url{https://en.wikipedia.org/wiki/Image_derivatives} (Derivative Filter), \\ \url{https://en.wikipedia.org/wiki/Kernel_(image_processing)} (Blue Kernel)
+    \item Construction of $\boldsymbol{A_\theta}$ used in (b), can be complex and depends on how the image is rotated. \\
+    Several methods are stated here, \url{https://datagenetics.com/blog/august32013/index.html}. \\
+    In all cases, pixel value in rotated image is some linear combination of original value, this can be represented as a matrix $\boldsymbol{A_\theta}$ of size $n^2 \times n^2$. \\
+    Padding and/or cropping can make the transformation formula more complex. \\
+    In simplest case, $\boldsymbol{x_i}(x, y) = \boldsymbol{s_i}(x \cos{\theta} + y \sin{\theta}, -x \sin{\theta} + y \cos{\theta})$ if $(x \cos{\theta} + y \sin{\theta}, -x \sin{\theta} + y \cos{\theta})$ lies in region else $0$.
+\end{itemize}
 
 
 \newpage
