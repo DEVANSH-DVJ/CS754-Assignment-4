@@ -343,25 +343,25 @@ The residue vector of the projection is:
 \end{enumerate}
 
 \textbf{\textit{Iteration}}:
-At the $i^th$ iteration, do:
+At the $i^{th}$ iteration, do:
 
 \begin{enumerate}
-    \item $\Tilde{T^l} = T^{l-1} \cup $ \{ $K$ indices corresponding to the largest magnitude entries in the vector $\bs{\Phi^*y^{i-1}_r}$ \}
-    \item Set $\bs{x}_p = \bs{\Phi}^{\dagger}_{T^i}  $
+    \item $\Tilde{T^i} = T^{i-1} \cup $ \{ $K$ indices corresponding to the largest magnitude entries in the vector $\bs{\Phi^*y^{i-1}_r}$ \}
+    \item Set $\bs{x}_p = \bs{\Phi}^{\dagger}_{\hat{T}^i} \bs{y} $
     \item $T^i = $ \{ $K$ indices corresponding to the largest magnitude entries in the vector $\bs{x}_p$ \} 
     \item $\bs{y^i_r}  = resid ( \bs{y}, \bs{\Phi}_{T^i} ) $
-    \item If $\norm{\bs{y^i_r}  }_2 > \bs{y^{i-1}_r}  $,  let ${T^i}= {T^{i-1}}$ and quit the iteration
-\end{enumerate} 
+    \item If $\norm{\bs{y^i_r}  }_2 > \norm{\bs{y^{i-1}_r}}  $,  let ${T^i}= {T^{i-1}}$ and quit the iteration
+\end{enumerate}
 
 \textbf{\textit{Output}}:
 
-Let $\bs{x}_{T^i} = \bs{\Phi}^{\dagger}_{T^i}  $, and set all other entries to 0. Output this estimated signal $\bs{x}$.
+Let $\bs{x}_{T^i} = \bs{\Phi}^{\dagger}_{T^i}\bs{y}  $, and set all other entries to 0. Output this estimated signal $\bs{x}$.
 
 \hrulefill
 
 \subsection*{Flow Chart}
 
-The following Flow Chart can assist in better understanding of the algorithm: 
+The following Flow Chart can assist in better understanding of the algorithm (here $l$ corresponds to the $i$ in our code- the iterating variable): 
 
 \includegraphics[scale=0.34]{SP_Flowchart.png}
 
