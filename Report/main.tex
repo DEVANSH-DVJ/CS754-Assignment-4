@@ -81,13 +81,13 @@
 \bigskip
 
 \subsection*{Choosing Dictionary and CS-solvers parameters}
-We know that $\boldsymbol{f_1}$ is sparse in DCT basis and $\boldsymbol{f_2}$ is sparse in Time domain. \\
-However $\boldsymbol{f} = \boldsymbol{f_1} + \boldsymbol{f_2}$ is sparse in neither DCT basis nor Time domain. \\
-So, we create a over-complete dictionary $\boldsymbol{A}$ by concatenating DCT basis and Identity basis (matrix). \\
-$\boldsymbol{f}$ is sparsely representable in $\boldsymbol{A}$.\\
+We know that $\bs{f_1}$ is sparse in DCT basis and $\bs{f_2}$ is sparse in Time domain. \\
+However $\bs{f} = \bs{f_1} + \bs{f_2}$ is sparse in neither DCT basis nor Time domain. \\
+So, we create a over-complete dictionary $\bs{A}$ by concatenating DCT basis and Identity basis (matrix). \\
+$\bs{f}$ is sparsely representable in $\bs{A}$.\\
 
 The OMP implementation provided by Prof. Rajwade as part of Assignment 1 solution (matches with our implementation for Assignment 1 but with additional checks) was used (present in \texttt{omp\_error.m}). \\
-The parameters to the function are $\boldsymbol{A}$, $\boldsymbol{f}$ and $\sigma$. \\
+The parameters to the function are $\bs{A}$, $\bs{f}$ and $\sigma$. \\
 Line 4 in \texttt{omp\_error.m} uses $\sigma$ to calculate error bound $e = n \sigma^2$. \\
 
 \bigskip
@@ -101,8 +101,8 @@ dctmat = dctmtx(256);
 A = [dctmat eye(256)];
 \end{verbatim}
 
-\subsubsection*{Generating $\boldsymbol{f}$}
-Here, \texttt{s} is the sparsity level of $\boldsymbol{f_1}$ and $\boldsymbol{f_2}$.
+\subsubsection*{Generating $\bs{f}$}
+Here, \texttt{s} is the sparsity level of $\bs{f_1}$ and $\bs{f_2}$.
 \begin{verbatim}
 ind1 = randi(256, s, 1);
 coeff1 = zeros(256,1);
@@ -119,7 +119,7 @@ sigma = 0.01 * abs(mean(f));
 f = f + randn(256,1)*sigma;
 \end{verbatim}
 
-\subsubsection*{Reconstruction of $\boldsymbol{f_1}$ and $\boldsymbol{f_2}$}
+\subsubsection*{Reconstruction of $\bs{f_1}$ and $\bs{f_2}$}
 \begin{verbatim}
 x = omp_error(A, f, sigma);
 coeff1_recon = x(1:256);
@@ -137,19 +137,19 @@ f2_recon = coeff2_recon;
     \centering
     \begin{floatrow}
       \ffigbox[\FBwidth]
-      {\caption{Reconstruction Error in $\boldsymbol{f_1}$}}
+      {\caption{Reconstruction Error in $\bs{f_1}$}}
       {\includegraphics[scale=0.3]{error1_sigma.jpg}}
       
       \ffigbox[\FBwidth]
-      {\caption{Reconstruction Error in $\boldsymbol{f_2}$}}
+      {\caption{Reconstruction Error in $\bs{f_2}$}}
       {\includegraphics[scale=0.3]{error2_sigma.jpg}}
     \end{floatrow}
 \end{figure}
 
 \subsubsection*{Comments:}
 \begin{itemize}
-    \item $\sigma$ ranges from 0.001 to 0.1 $\times$ (average value of $\boldsymbol{f_1} + \boldsymbol{f_2}$).
-    \item We can clearly see increase in reconstruction error for both $\boldsymbol{f_1}$ and $\boldsymbol{f_2}$ as $\sigma$ increases.
+    \item $\sigma$ ranges from 0.001 to 0.1 $\times$ (average value of $\bs{f_1} + \bs{f_2}$).
+    \item We can clearly see increase in reconstruction error for both $\bs{f_1}$ and $\bs{f_2}$ as $\sigma$ increases.
 \end{itemize}
 
 \subsection*{Varying sparsity level $s$ with fixed $\sigma$}
@@ -158,11 +158,11 @@ f2_recon = coeff2_recon;
     \centering
     \begin{floatrow}
       \ffigbox[\FBwidth]
-      {\caption{Reconstruction Error in $\boldsymbol{f_1}$}}
+      {\caption{Reconstruction Error in $\bs{f_1}$}}
       {\includegraphics[scale=0.3]{error1_sparsity.jpg}}
       
       \ffigbox[\FBwidth]
-      {\caption{Reconstruction Error in $\boldsymbol{f_2}$}}
+      {\caption{Reconstruction Error in $\bs{f_2}$}}
       {\includegraphics[scale=0.3]{error2_sparsity.jpg}}
     \end{floatrow}
 \end{figure}
@@ -172,7 +172,7 @@ f2_recon = coeff2_recon;
     \item Sparsity level $s$ ranges from 1 to 100.
     \item Reconstruction error is negligible/acceptable till around sparsity level of about 64 (25\% of N=256). \\
     We see a sudden rise in error reaching 1 by sparsity level of 70.
-    \item If we zoom into the first part of the plot, we will see a very slow rise (not consistent but visible) in reconstruction error for both $\boldsymbol{f_1}$ and $\boldsymbol{f_2}$ with increase in sparsity level $s$.
+    \item If we zoom into the first part of the plot, we will see a very slow rise (not consistent but visible) in reconstruction error for both $\bs{f_1}$ and $\bs{f_2}$ with increase in sparsity level $s$.
 \end{itemize}
 
 \subsection*{Varying magnitude ratio $k$}
@@ -181,23 +181,23 @@ f2_recon = coeff2_recon;
     \centering
     \begin{floatrow}
       \ffigbox[\FBwidth]
-      {\caption{Reconstruction Error in $\boldsymbol{f_1}$}}
+      {\caption{Reconstruction Error in $\bs{f_1}$}}
       {\includegraphics[scale=0.3]{error1_k.jpg}}
       
       \ffigbox[\FBwidth]
-      {\caption{Reconstruction Error in $\boldsymbol{f_2}$}}
+      {\caption{Reconstruction Error in $\bs{f_2}$}}
       {\includegraphics[scale=0.3]{error2_k.jpg}}
     \end{floatrow}
 \end{figure}
 
 \subsubsection*{Comments:}
 \begin{itemize}
-    \item The magnitude of $\boldsymbol{f_2}$ is $k$ times that of $\boldsymbol{f_1}$
-    \item We can clearly see increase in reconstruction error for both $\boldsymbol{f_1}$ as $k$ increases. \\
-    However, the reconstruction error for $\boldsymbol{f_2}$ is almost consistent at around 0.001.
-    \item The possible explanation of this could be the decrease in significance of $\boldsymbol{f_1}$ in $\boldsymbol{f}$, so the error bound in OMP exits when the error value of $\boldsymbol{f_2}$ is less as error value of $\boldsymbol{f_1}$ becomes less significant with increase in $k$.
-    \item To add to that, $\sigma$ is based on the average value of $\boldsymbol{f_1} + \boldsymbol{f_2}$, which increases while the average value of $\boldsymbol{f_1}$ remains same, thus giving similar results as the experiment when we were varying $\sigma$. \\
-    For $\boldsymbol{f_2}$, increase in $\sigma$ is counter-acted by the increase in average value of $\boldsymbol{f_2}$, thus giving us almost consistent reconstruction error.
+    \item The magnitude of $\bs{f_2}$ is $k$ times that of $\bs{f_1}$
+    \item We can clearly see increase in reconstruction error for both $\bs{f_1}$ as $k$ increases. \\
+    However, the reconstruction error for $\bs{f_2}$ is almost consistent at around 0.001.
+    \item The possible explanation of this could be the decrease in significance of $\bs{f_1}$ in $\bs{f}$, so the error bound in OMP exits when the error value of $\bs{f_2}$ is less as error value of $\bs{f_1}$ becomes less significant with increase in $k$.
+    \item To add to that, $\sigma$ is based on the average value of $\bs{f_1} + \bs{f_2}$, which increases while the average value of $\bs{f_1}$ remains same, thus giving similar results as the experiment when we were varying $\sigma$. \\
+    For $\bs{f_2}$, increase in $\sigma$ is counter-acted by the increase in average value of $\bs{f_2}$, thus giving us almost consistent reconstruction error.
 \end{itemize}
 
 
@@ -466,90 +466,100 @@ $c^{'}_{K}$ is a constant independent of $\bs{x}$, equal to $\sqrt{\dfrac{1+\del
 \setcounter{equation}{0}
 
 \textbf{Given:} \\
-Dictionary $\boldsymbol{D}$ contains images $\boldsymbol{d_k} \ (k \in \{1, \dots, M\})$, each of same dimension as images of class $\mathcal{S}$. \\
-All images $\boldsymbol{s_i}$ in class $\mathcal{S}$ are sparsely represented in dictionary $\boldsymbol{D}$, i.e., $\boldsymbol{s_i} = \sum_{k=1}^{M} \alpha_k \boldsymbol{d_k}$ where $\{\alpha_k\}_{k=1}^{k=M}$ is a sparse vector. \\
+Dictionary $\bs{D}$ contains images $\bs{d_k} \ (k \in \{1, \dots, M\})$, each of same dimension as images of class $\mathcal{S}$. \\
+All images $\bs{s_i}$ in class $\mathcal{S}$ are sparsely represented in dictionary $\bs{D}$, i.e., $\bs{s_i} = \sum_{k=1}^{M} \alpha_k \bs{d_k}$ where $\{\alpha_k\}_{k=1}^{k=M}$ is a sparse vector. \\
 
 \medskip
 
 \subsection*{(a)}
 Class $\mathcal{S}_1$ which consists of images obtained by applying a known derivative filter to the images in $\mathcal{S}$. \\
-Image $\boldsymbol{x_i}$ in Class $\mathcal{S}_1$ is obtained by applying a known derivative filter $\boldsymbol{d}$ to the image $\boldsymbol{s_i}$ in $\mathcal{S}$. \\
+Image $\bs{x_i}$ in Class $\mathcal{S}_1$ is obtained by applying a known derivative filter $\bs{d}$ to the image $\bs{s_i}$ in $\mathcal{S}$.
+
 \begin{equation*}
     \begin{aligned}
-        \boldsymbol{x_i} &= \boldsymbol{d} \boldsymbol{*} \boldsymbol{s_i} \\
-            &= \boldsymbol{d} \boldsymbol{*} \sum_{k=1}^{M} \alpha_k \boldsymbol{d_k} \\
-            &= \sum_{k=1}^{M} \alpha_k (\boldsymbol{d} \boldsymbol{*} \boldsymbol{d_k}) \ \ (\text{Distributive Property of Convolution)}\\
+        \bs{x_i} &= \bs{d} \bs{*} \bs{s_i} \\
+            &= \bs{d} \bs{*} \sum_{k=1}^{M} \alpha_k \bs{d_k} \\
+            &= \sum_{k=1}^{M} \alpha_k (\bs{d} \bs{*} \bs{d_k}) \ \ (\text{Distributive Property of Convolution)}\\
     \end{aligned}
 \end{equation*}
+
 As we know that $\{\alpha_k\}_{k=1}^{k=M}$ is a sparse vector. \\
-All images $\boldsymbol{x_i}$ in class $\mathcal{S}_1$ are sparsely represented in dictionary $\boldsymbol{D_1} = \{\boldsymbol{d} \boldsymbol{*} \boldsymbol{d_k} | \boldsymbol{d_k} \in \boldsymbol{D}\}$. \\
+All images $\bs{x_i}$ in class $\mathcal{S}_1$ are sparsely represented in dictionary $\bs{D_1} = \{\bs{d} \bs{*} \bs{d_k} | \bs{d_k} \in \bs{D}\}$. \\
 
 \medskip
 
 \subsection*{(b)}
 Class $\mathcal{S}_2$ which consists of images obtained by rotating a subset of the images in class $\mathcal{S}$ by a known fixed angle $\alpha$, and the other subset by another known fixed angle $\beta$. \\
-Rotating of an image by angle $\theta$ is equivalent to pre-multiplying original with a matrix $\boldsymbol{A_\theta}$\footnote{refer to comments at the end of question for construction}. \\
+Rotating of an image by angle $\theta$ is equivalent to pre-multiplying original with a matrix $\bs{A_\theta}$\footnote{refer to comments at the end of question for construction}.
+
 \begin{equation*}
     \begin{aligned}
-        \boldsymbol{x_i} &= \boldsymbol{A_\theta} \boldsymbol{s_i} \\
-            &= \boldsymbol{A_\theta} \sum_{k=1}^{M} \alpha_k \boldsymbol{d_k} \\
-            &= \sum_{k=1}^{M} \alpha_k (\boldsymbol{A_\theta} \boldsymbol{d_k}) \\
+        \bs{x_i} &= \bs{A_\theta} \bs{s_i} \\
+            &= \bs{A_\theta} \sum_{k=1}^{M} \alpha_k \bs{d_k} \\
+            &= \sum_{k=1}^{M} \alpha_k (\bs{A_\theta} \bs{d_k}) \\
     \end{aligned}
 \end{equation*}
-As we know that $\{\alpha_k\}_{k=1}^{k=M}$ is a sparse vector. \\
-Image $\boldsymbol{x_i}$ in Class $\mathcal{S}_2$ is obtained by rotating the image $\boldsymbol{s_i}$ in $\mathcal{S}$ by either $\alpha$ or $\beta$, it can be represented as sparse linear combination of $\boldsymbol{A_\alpha} \boldsymbol{d_k}$ or $\boldsymbol{A_\beta} \boldsymbol{d_k}$. \\
-All images $\boldsymbol{x_i}$ in class $\mathcal{S}_2$ are sparsely represented in dictionary $\boldsymbol{D_2} = \{\boldsymbol{A_\alpha} \boldsymbol{d_k} | \boldsymbol{d_k} \in \boldsymbol{D}\} \cup \{\boldsymbol{A_\beta} \boldsymbol{d_k} | \boldsymbol{d_k} \in \boldsymbol{D}\}$. \\
 
-\medskip
+As we know that $\{\alpha_k\}_{k=1}^{k=M}$ is a sparse vector. \\
+Image $\bs{x_i}$ in Class $\mathcal{S}_2$ is obtained by rotating the image $\bs{s_i}$ in $\mathcal{S}$ by either $\alpha$ or $\beta$, it can be represented as sparse linear combination of $\bs{A_\alpha} \bs{d_k}$ or $\bs{A_\beta} \bs{d_k}$. \\
+All images $\bs{x_i}$ in class $\mathcal{S}_2$ are sparsely represented in dictionary $\bs{D_2} = \{\bs{A_\alpha} \bs{d_k} | \bs{d_k} \in \bs{D}\} \cup \{\bs{A_\beta} \bs{d_k} | \bs{d_k} \in \bs{D}\}$. \\
+
+\newpage
 
 \subsection*{(c)}
 Class $\mathcal{S}_3$ which consists of images obtained by applying an intensity transformation $I^i_{new}(x,y) = \alpha (I^i_{old}(x,y))^2 + \beta (I^i_{old}(x,y)) + \gamma$ to the images in $\mathcal{S}$, where $\alpha,\beta,\gamma$ are known. \\
-Image $\boldsymbol{x_i}$ in Class $\mathcal{S}_3$ is obtained by by applying an intensity transformation to $\boldsymbol{s_i}$ in $\mathcal{S}$. \\
+Image $\bs{x_i}$ in Class $\mathcal{S}_3$ is obtained by by applying an intensity transformation to $\bs{s_i}$ in $\mathcal{S}$.
+
 \begin{equation*}
     \begin{aligned}
-        \boldsymbol{s_i}(x, y) &= \sum_{k=1}^{M} \alpha_k \boldsymbol{d_k}(x,y) \ \ (\Longleftrightarrow \boldsymbol{s_i} = \sum_{k=1}^{M} \alpha_k \boldsymbol{d_k}) \\
-        \boldsymbol{x_i}(x, y) &= \alpha(\boldsymbol{s_i}(x, y))^2 + \beta(\boldsymbol{s_i}(x, y)) + \gamma \\
-            &= \alpha(\sum_{k=1}^{M} \alpha_k \boldsymbol{d_k}(x,y))^2 + \beta(\sum_{k=1}^{M} \alpha_k \boldsymbol{d_k}(x,y)) + (\gamma) \\
-            &= (\sum_{k=1}^{M} \alpha \alpha_k^2 (\boldsymbol{d_k}(x,y))^2) + (\sum_{k=1}^{M} \sum_{l>k}^{M} \alpha \alpha_k \alpha_l (\boldsymbol{d_k}(x,y))(\boldsymbol{d_l}(x,y))) + (\sum_{k=1}^{M} \beta \alpha_k (\boldsymbol{d_k}(x,y))) + (\gamma (\boldsymbol{1})) \\
-            &(\Longleftrightarrow \boldsymbol{x_i} = (\sum_{k=1}^{M} \alpha \alpha_k^2 (\boldsymbol{d_k}.\wedge2)) + (\sum_{k=1}^{M} \sum_{l>k}^{M} \alpha \alpha_k \alpha_l (\boldsymbol{d_k}.*\boldsymbol{d_l})) + (\sum_{k=1}^{M} \beta \alpha_k \boldsymbol{d_k}) + (\gamma \boldsymbol{1}) \\
+        \bs{s_i}(x, y) &= \sum_{k=1}^{M} \alpha_k \bs{d_k}(x,y) \ \ (\Longleftrightarrow \bs{s_i} = \sum_{k=1}^{M} \alpha_k \bs{d_k}) \\
+        \bs{x_i}(x, y) &= \alpha(\bs{s_i}(x, y))^2 + \beta(\bs{s_i}(x, y)) + \gamma \\
+            &= \alpha(\sum_{k=1}^{M} \alpha_k \bs{d_k}(x,y))^2 + \beta(\sum_{k=1}^{M} \alpha_k \bs{d_k}(x,y)) + (\gamma) \\
+            &= (\sum_{k=1}^{M} \alpha \alpha_k^2 (\bs{d_k}(x,y))^2) + (\sum_{k=1}^{M} \sum_{l>k}^{M} \alpha \alpha_k \alpha_l (\bs{d_k}(x,y))(\bs{d_l}(x,y))) + (\sum_{k=1}^{M} \beta \alpha_k (\bs{d_k}(x,y))) + (\gamma (\bs{1})) \\
+            &(\Longleftrightarrow \bs{x_i} = (\sum_{k=1}^{M} \alpha \alpha_k^2 (\bs{d_k}.\wedge2)) + (\sum_{k=1}^{M} \sum_{l>k}^{M} \alpha \alpha_k \alpha_l (\bs{d_k}.*\bs{d_l})) + (\sum_{k=1}^{M} \beta \alpha_k \bs{d_k}) + (\gamma \bs{1}) \\
     \end{aligned}
 \end{equation*}
+
 As we know that $\{\alpha_k\}_{k=1}^{k=M}$ is a sparse vector, $\{\alpha \alpha_k^2\}_{k=1}^{k=M} \cup \{\alpha \alpha_k \alpha_l\}_{k=1,l>k}^{k=M,l=M} \cup \{\beta \alpha_k\}_{k=1}^{k=M} \cup \{\gamma\}$ is also a sparse vector (percentage sparsity doesn't increase). \\
-All images $\boldsymbol{x_i}$ in class $\mathcal{S}_3$ are sparsely represented in dictionary $\boldsymbol{D_3} = \boldsymbol{D} \cup \{\boldsymbol{1}, \text{vector contains all 1s}\} \cup \{\boldsymbol{d_k}.\wedge2 | \boldsymbol{d_k} \in \boldsymbol{D}\} \cup \{\boldsymbol{d_k}.*\boldsymbol{d_l} | \boldsymbol{d_k}, \boldsymbol{d_l} \in \boldsymbol{D}, l > k\}$. \\
+All images $\bs{x_i}$ in class $\mathcal{S}_3$ are sparsely represented in dictionary $\bs{D_3} = \bs{D} \cup \{\bs{1}, \text{vector contains all 1s}\} \cup \{\bs{d_k}.\wedge2 | \bs{d_k} \in \bs{D}\} \cup \{\bs{d_k}.*\bs{d_l} | \bs{d_k}, \bs{d_l} \in \bs{D}, l > k\}$. \\
 
 \medskip
 
 \subsection*{(d)}
 Class $\mathcal{S}_4$ which consists of images obtained by applying a known blur kernel to the images in $\mathcal{S}$. \\
-Image $\boldsymbol{x_i}$ in Class $\mathcal{S}_4$ is obtained by applying a known blur kernel $\boldsymbol{\omega}$ to the image $\boldsymbol{s_i}$ in $\mathcal{S}$. \\
+Image $\bs{x_i}$ in Class $\mathcal{S}_4$ is obtained by applying a known blur kernel $\bs{\omega}$ to the image $\bs{s_i}$ in $\mathcal{S}$.
+
 \begin{equation*}
     \begin{aligned}
-        \boldsymbol{x_i} &= \boldsymbol{\omega} \boldsymbol{*} \boldsymbol{s_i} \\
-            &= \boldsymbol{\omega} \boldsymbol{*} \sum_{k=1}^{M} \alpha_k \boldsymbol{d_k} \\
-            &= \sum_{k=1}^{M} \alpha_k (\boldsymbol{\omega} \boldsymbol{*} \boldsymbol{d_k}) \ \ (\text{Distributive Property of Convolution)}\\
+        \bs{x_i} &= \bs{\omega} \bs{*} \bs{s_i} \\
+            &= \bs{\omega} \bs{*} \sum_{k=1}^{M} \alpha_k \bs{d_k} \\
+            &= \sum_{k=1}^{M} \alpha_k (\bs{\omega} \bs{*} \bs{d_k}) \ \ (\text{Distributive Property of Convolution)}\\
     \end{aligned}
 \end{equation*}
+
 As we know that $\{\alpha_k\}_{k=1}^{k=M}$ is a sparse vector. \\
-All images $\boldsymbol{x_i}$ in class $\mathcal{S}_4$ are sparsely represented in dictionary $\boldsymbol{D_4} = \{\boldsymbol{\omega} \boldsymbol{*} \boldsymbol{d_k} | \boldsymbol{d_k} \in \boldsymbol{D}\}$. \\
+All images $\bs{x_i}$ in class $\mathcal{S}_4$ are sparsely represented in dictionary $\bs{D_4} = \{\bs{\omega} \bs{*} \bs{d_k} | \bs{d_k} \in \bs{D}\}$. \\
 
 \medskip
 
 \subsection*{(e)}
 Class $\mathcal{S}_5$ which consists of images obtained by applying a blur kernel which is known to be a linear combination of blur kernels belonging to a known set $\mathcal{B}$, to the images in $\mathcal{S}$. \\
-Image $\boldsymbol{x_i}$ in Class $\mathcal{S}_5$ is obtained by applying a blur kernel $\boldsymbol{\omega}$ which is known to be a linear combination\footnote{I have assumed that we don't know this linear combination and it may vary for different $\boldsymbol{x_i}$s.} of blur kernels belonging to a known set $\mathcal{B}$, to the image $\boldsymbol{s_i}$ in $\mathcal{S}$. \\
+Image $\bs{x_i}$ in Class $\mathcal{S}_5$ is obtained by applying a blur kernel $\bs{\omega}$ which is known to be a linear combination\footnote{I have assumed that we don't know this linear combination and it may vary for different $\bs{x_i}$s.} of blur kernels belonging to a known set $\mathcal{B}$, to the image $\bs{s_i}$ in $\mathcal{S}$.
+
 \begin{equation*}
     \begin{aligned}
-        \boldsymbol{\omega} &= \sum_{j=1}^{b} \beta_j \boldsymbol{b_j} \ \  (\boldsymbol{b_j} \in \mathcal{B}) \\
-        \boldsymbol{x_i} &= \boldsymbol{\omega} \boldsymbol{*} \boldsymbol{s_i} \\
-            &= \boldsymbol{\omega} \boldsymbol{*} \sum_{k=1}^{M} \alpha_k \boldsymbol{d_k} \\
-            &= \sum_{k=1}^{M} \alpha_k (\boldsymbol{\omega} \boldsymbol{*} \boldsymbol{d_k}) &\ \ (\text{Distributive Property of Convolution)}\\
-            &= \sum_{k=1}^{M} \alpha_k ((\sum_{j=1}^{b} \beta_j \boldsymbol{b_j}) \boldsymbol{*} \boldsymbol{d_k}) \\
-            &= \sum_{k=1}^{M} \alpha_k (\sum_{j=1}^{b} \beta_j (\boldsymbol{b_j} \boldsymbol{*} \boldsymbol{d_k})) &\ \ (\text{Distributive Property of Convolution)}\\
-            &= \sum_{k=1}^{M} \sum_{j=1}^{b} \alpha_k \beta_j (\boldsymbol{b_j} \boldsymbol{*} \boldsymbol{d_k}) \\
+        \bs{\omega} &= \sum_{j=1}^{b} \beta_j \bs{b_j} \ \  (\bs{b_j} \in \mathcal{B}) \\
+        \bs{x_i} &= \bs{\omega} \bs{*} \bs{s_i} \\
+            &= \bs{\omega} \bs{*} \sum_{k=1}^{M} \alpha_k \bs{d_k} \\
+            &= \sum_{k=1}^{M} \alpha_k (\bs{\omega} \bs{*} \bs{d_k}) &\ \ (\text{Distributive Property of Convolution)}\\
+            &= \sum_{k=1}^{M} \alpha_k ((\sum_{j=1}^{b} \beta_j \bs{b_j}) \bs{*} \bs{d_k}) \\
+            &= \sum_{k=1}^{M} \alpha_k (\sum_{j=1}^{b} \beta_j (\bs{b_j} \bs{*} \bs{d_k})) &\ \ (\text{Distributive Property of Convolution)}\\
+            &= \sum_{k=1}^{M} \sum_{j=1}^{b} \alpha_k \beta_j (\bs{b_j} \bs{*} \bs{d_k}) \\
     \end{aligned}
 \end{equation*}
+
 As we know that $\{\alpha_k\}_{k=1}^{k=M}$ is a sparse vector, $\{\alpha_k \beta_j\}_{k=1, j=1}^{k=M, j=b}$ is also a sparse vector (percentage sparsity doesn't increase). \\
-All images $\boldsymbol{x_i}$ in class $\mathcal{S}_5$ are sparsely represented in dictionary $\boldsymbol{D_5} = \{\boldsymbol{b_j} \boldsymbol{*} \boldsymbol{d_k} | \boldsymbol{d_k} \in \boldsymbol{D}, \boldsymbol{b_j} \in \mathcal{B} \}$. \\ Dictionary contains $Mb$ images.
+All images $\bs{x_i}$ in class $\mathcal{S}_5$ are sparsely represented in dictionary $\bs{D_5} = \{\bs{b_j} \bs{*} \bs{d_k} | \bs{d_k} \in \bs{D}, \bs{b_j} \in \mathcal{B} \}$. \\ Dictionary contains $Mb$ images.
 
 \subsection*{Comments:}
 \begin{itemize}
@@ -557,11 +567,11 @@ All images $\boldsymbol{x_i}$ in class $\mathcal{S}_5$ are sparsely represented 
     \item In (c) and (e), number of atoms present in the dictionary has increased significantly, however, percentage sparsity is maintained (in fact, decreased in (c)).
     \item Derivative filter uses convolution, so does blur kernel, so the results are similar. \\
     Reference: \url{https://en.wikipedia.org/wiki/Image_derivatives} (Derivative Filter), \\ \url{https://en.wikipedia.org/wiki/Kernel_(image_processing)} (Blue Kernel)
-    \item Construction of $\boldsymbol{A_\theta}$ used in (b), can be complex and depends on how the image is rotated. \\
+    \item Construction of $\bs{A_\theta}$ used in (b), can be complex and depends on how the image is rotated. \\
     Several methods are stated here, \url{https://datagenetics.com/blog/august32013/index.html}. \\
-    In all cases, pixel value in rotated image is some linear combination of original value, this can be represented as a matrix $\boldsymbol{A_\theta}$ of size $n^2 \times n^2$. \\
+    In all cases, pixel value in rotated image is some linear combination of original value, this can be represented as a matrix $\bs{A_\theta}$ of size $n^2 \times n^2$. \\
     Padding and/or cropping can make the transformation formula more complex. \\
-    In simplest case, $\boldsymbol{x_i}(x, y) = \boldsymbol{s_i}(x \cos{\theta} + y \sin{\theta}, -x \sin{\theta} + y \cos{\theta})$ if $(x \cos{\theta} + y \sin{\theta}, -x \sin{\theta} + y \cos{\theta})$ lies in region else $0$.
+    In simplest case, $\bs{x_i}(x, y) = \bs{s_i}(x \cos{\theta} + y \sin{\theta}, -x \sin{\theta} + y \cos{\theta})$ if $(x \cos{\theta} + y \sin{\theta}, -x \sin{\theta} + y \cos{\theta})$ lies in region else $0$.
 \end{itemize}
 
 
@@ -576,13 +586,13 @@ All images $\boldsymbol{x_i}$ in class $\mathcal{S}_5$ are sparsely represented 
 
 \smallskip
 
-$\boldsymbol{A}$, a $m \times n$ matrix of rank greater than $r$ , is known apriori.
+$\bs{A}$, a $m \times n$ matrix of rank greater than $r$ , is known apriori.
 
 \smallskip
 
-We seek to minimize $J(\boldsymbol{Q})$:
+We seek to minimize $J(\bs{Q})$:
 \begin{center}
-    $J(\boldsymbol{Q}) = \|\boldsymbol{A}-\boldsymbol{Q}\|^2_F$, where $\boldsymbol{Q}$ is a rank-$r$ matrix, with $r < m, \; r < n$
+    $J(\bs{Q}) = \|\bs{A}-\bs{Q}\|^2_F$, where $\bs{Q}$ is a rank-$r$ matrix, with $r < m, \; r < n$
 \end{center}
 \hrulefill
 
@@ -592,7 +602,7 @@ We seek to minimize $J(\boldsymbol{Q})$:
 
 \medskip
 
-The arg min of $J(\boldsymbol{Q})$ is $\bs{A_r=U \Sigma_r V^T}$ 
+The arg min of $J(\bs{Q})$ is $\bs{A_r=U \Sigma_r V^T}$ 
 
 \smallskip
 
@@ -683,11 +693,11 @@ Thus the claim is proved.
 \bigskip 
 
 { \large  \textbf{\textit{Claim 4.1.2:}}} For any matrix $B$ of rank at most $r$, 
-$  \|\boldsymbol{A}-\boldsymbol{A_r}\|^2_F \leq \|\boldsymbol{A}-\boldsymbol{B}\|^2_F $
+$  \|\bs{A}-\bs{A_r}\|^2_F \leq \|\bs{A}-\bs{B}\|^2_F $
 
 \medskip 
 
-Let $\bs{B}$ minimize $ \|\boldsymbol{A}-\boldsymbol{B}\|^2_F$ among all rank $r$ or less matrices.
+Let $\bs{B}$ minimize $ \|\bs{A}-\bs{B}\|^2_F$ among all rank $r$ or less matrices.
 
 \smallskip
 
@@ -696,13 +706,13 @@ spanned by the rows of $\bs{B}$. The dimension of $\bs{V}$  is at most k.
 
 \medskip
 
-Since  $\bs{B}$ minimizes $ \|\boldsymbol{A}-\boldsymbol{B}\|^2_F$, it must be that each row of $\bs{B}$ is the projection of the corresponding row of $\bs{A}$ onto $\bs{V}$, otherwise replacing the row of $\bs{B}$ with the projection of the corresponding row of $\bs{A}$ onto $\bs{V}$
-does not change $\bs{V}$ and hence the rank of $\bs{B}$ but would reduce $ \|\boldsymbol{A}-\boldsymbol{B}\|^2_F$
+Since  $\bs{B}$ minimizes $ \|\bs{A}-\bs{B}\|^2_F$, it must be that each row of $\bs{B}$ is the projection of the corresponding row of $\bs{A}$ onto $\bs{V}$, otherwise replacing the row of $\bs{B}$ with the projection of the corresponding row of $\bs{A}$ onto $\bs{V}$
+does not change $\bs{V}$ and hence the rank of $\bs{B}$ but would reduce $ \|\bs{A}-\bs{B}\|^2_F$
 
 \smallskip
 
 Since each row
-of $\bs{B}$ is the projection of the corresponding row of $\bs{A}$, it follows that $ \|\boldsymbol{A}-\boldsymbol{B}\|^2_F$ is the sum
+of $\bs{B}$ is the projection of the corresponding row of $\bs{A}$, it follows that $ \|\bs{A}-\bs{B}\|^2_F$ is the sum
 of squared distances of rows of  $\bs{A}$  to  $\bs{V}$ .  
 
 \smallskip
@@ -768,13 +778,13 @@ the particular solution to the optimization problem we solved before.
 
 \smallskip
 
-Matrices $\boldsymbol{A}$ and $\boldsymbol{B}$ are both known.
+Matrices $\bs{A}$ and $\bs{B}$ are both known.
 
 \smallskip
 
-We seek to minimize $J(\boldsymbol{R})$ where  $\boldsymbol{R}$ is constrained to be orthonormal, and: 
+We seek to minimize $J(\bs{R})$ where  $\bs{R}$ is constrained to be orthonormal, and: 
 \begin{center}
-    $J(\boldsymbol{R}) = \|\boldsymbol{A}-\boldsymbol{R} \boldsymbol{B}\|^2_F$, where $\boldsymbol{A} \in \mathbb{R}^{n \times m}, \boldsymbol{B} \in \mathbb{R}^{n \times m}, \boldsymbol{R} \in \mathbb{R}^{n \times n}, m > n$ 
+    $J(\bs{R}) = \|\bs{A}-\bs{R} \bs{B}\|^2_F$, where $\bs{A} \in \mathbb{R}^{n \times m}, \bs{B} \in \mathbb{R}^{n \times m}, \bs{R} \in \mathbb{R}^{n \times n}, m > n$ 
 
 \end{center}
 \hrulefill
@@ -785,7 +795,7 @@ We seek to minimize $J(\boldsymbol{R})$ where  $\boldsymbol{R}$ is constrained t
 
 \medskip
 
-The arg min of $J(\boldsymbol{R})$ with constraint $\bs{R^TR=I}$,  
+The arg min of $J(\bs{R})$ with constraint $\bs{R^TR=I}$,  
 is $\bs{R=VU^T}$ 
 
 \smallskip
@@ -803,7 +813,7 @@ where $\bs{USV^T}$ is the singular value decomposition of $\bs{BA^T}$
 
 First, we simplify $J(\bs{R})$ as follows: 
 \begin{align*}
-    J(\boldsymbol{R}) &= \|\boldsymbol{A}-\boldsymbol{R} \boldsymbol{B}\|^2_F \\
+    J(\bs{R}) &= \|\bs{A}-\bs{R} \bs{B}\|^2_F \\
     &= trace((\bs{A}-\bs{RB})^T (\bs{A}-\bs{RB}))  \\
     &= trace(\bs{A^TA + B^TB -  A^TRB - ( A^TRB  )^T  }) \;\;\;\; \ldots\text{(As $\bs{R^TR=I}$  )}\\
     &= trace(\bs{A^TA + B^TB}) - 2 trace(\bs{A^TRB}) \;\;\;\;\;\;\;\; \;\;\;\; \;\;\; 
@@ -812,7 +822,7 @@ First, we simplify $J(\bs{R})$ as follows:
 
 Now, $trace(\bs{A^TA + B^TB})$ is a constant.
 
-Thus to  minimize $J(\boldsymbol{R})$ is same as to maximize $trace(\bs{A^TRB})$ under same constraint. 
+Thus to  minimize $J(\bs{R})$ is same as to maximize $trace(\bs{A^TRB})$ under same constraint. 
 
 \medskip 
 
@@ -1025,8 +1035,7 @@ Some characteristics of the formulation are:
 
 \smallskip
 
-In equation 40 of the paper, explain how non-negative matrix factorization is used for hyperspectral
-unmixing.
+In equation 40 of the paper, explain how non-negative matrix factorization is used for hyperspectral unmixing.
 
 \hrulefill
 
@@ -1040,8 +1049,7 @@ Treat each $y[n]$ for $n= 1,2,\ldots, L$  as a column vector.
 
 \smallskip
 
-Then these are column concatened to form 
-$\bs{Y}=[ \; y[1] \; y[2] \; \ldots \; y[L] \; ] \in \R^{M \times L}$.
+Then these are column concatened to form $\bs{Y}=[ \; y[1] \; y[2] \; \ldots \; y[L] \; ] \in \R^{M \times L}$.
 
 \smallskip
 
@@ -1062,13 +1070,11 @@ This formulation has special properties:
 
 \smallskip
 
-First, we note that since the end-member matrix $\bs{A}$ 
-contains the spectral components of specific materials, it is non-negative. 
+First, we note that since the end-member matrix $\bs{A}$ contains the spectral components of specific materials, it is non-negative. 
 
 \smallskip
 
-Also, the abundance matrix $\bs{S}$ has every element in each vector non-negative 
-as explained in the previous part- thus this matrix is non-negative as well. 
+Also, the abundance matrix $\bs{S}$ has every element in each vector non-negative as explained in the previous part- thus this matrix is non-negative as well. 
 
 \smallskip
 
@@ -1076,15 +1082,12 @@ Thirdly, $N$, the number of endmembers, or materials, in the scene- is small, $N
 
 \smallskip
 
-Moreover the vectors $s[n]$ are empirically(In geoscience and remote sensing,
-a tremendous amount of effort has been spent on measuring
-and recording spectral samples of many different materials) observed to be sparse vectors. 
+Moreover the vectors $s[n]$ are empirically(In geoscience and remote sensing, a tremendous amount of effort has been spent on measuring and recording spectral samples of many different materials) observed to be sparse vectors. 
 
 
 \smallskip
 
 Furthermore, the optimization problem we solve here due to the nature of the LMM, is 
-
 \begin{center}
     $\displaystyle \min_{ \bs{A} \succeq {0}, \bs{S \succeq 0}  } \norm{\bs{Y-AS}}^2_F$
 \end{center}
@@ -1095,8 +1098,7 @@ This formulation is, in a way,  equivalent to the NMF problem, which was:
     Minimize $E(\bs{W, H}) = \norm{\bs{Y-WH}}  $ such that $\bs{W} \succeq \bs{0}, \bs{H} \succeq \bs{0} $
 \end{center}
 
-Suppose we obtain factors $\bs{A}$
-and $\bs{S}$ by non-negative matrix factorization(NMF) of $\bs{Y}$.
+Suppose we obtain factors $\bs{A}$ and $\bs{S}$ by non-negative matrix factorization(NMF) of $\bs{Y}$.
 
 \smallskip
 
@@ -1104,15 +1106,12 @@ Then, we can use  $\bs{A}$ as an estimate of the end-members; and $\bs{S}$ as th
 
 \smallskip
 
-This is what we wanted to estimate: to decompose the measured pixel spectrum
-of hyperspectral data into a collection of constituent spectral
-signatures (or end-members) and a set of corresponding fractional abundances.
+This is what we wanted to estimate: to decompose the measured pixel spectrum of hyperspectral data into a collection of constituent spectral signatures (or end-members) and a set of corresponding fractional abundances.
 
 \smallskip
 
 As we have accomplished this, we have accomplished hyperspectral unmixing.
-Thus, non-negative matrix factorization can be used for hyperspectral
-unmixing in the way as described. 
+Thus, non-negative matrix factorization can be used for hyperspectral unmixing in the way as described. 
 
 
 \bigskip
@@ -1120,7 +1119,7 @@ unmixing in the way as described.
 
 \subsection*{Part (c)}
 
-\textbf{Question: }
+\textbf{Question:}
 
 \smallskip
 
@@ -1131,44 +1130,31 @@ Explain the improvement to non-negative matrix factorization proposed in equatio
 
 \medskip
 
-\textbf{Answer: }
+\textbf{Answer:}
 
 \smallskip
 
-First of all, we impose all the constraints 
-on $\bs{S}$ that are required:
+First of all, we impose all the constraints on $\bs{S}$ that are required:
 
-Let $\mathcal{S}=\{ \bs{S} \;\; | \;\; \forall n:  \;\; s[n] \; \succeq \; \bs{0} ;  \;\;
-\bs{1}^Ts[n]=1    \}$. 
-It is clear that $\bs{S}$ must belong 
-to $\mathcal{S}$. 
+Let $\mathcal{S}=\{ \bs{S} \;\; | \;\; \forall n:  \;\; s[n] \; \succeq \; \bs{0} ;  \;\; \bs{1}^Ts[n]=1 \}$. 
+It is clear that $\bs{S}$ must belong to $\mathcal{S}$. 
 
 \medskip
 
-Let $Q$ be the set :
-$Q = \{ (A,S) |  \bs{A} \succeq {0}, 
-\bs{S} \in \mathcal{S}\}$
+Let $Q$ be the set : $Q = \{ (A,S) |  \bs{A} \succeq {0}, \bs{S} \in \mathcal{S}\}$.
 Our optimization is now over $Q$. 
 
 \medskip
 
-Now we investigate problems with NMF. 
+Now we investigate problems with NMF. \\
 
-First, NMF is NP-hard in general. 
-For this reason, optimization schemes we see 
-in the current NMF-based blind HU
-developments are rather pragmatic.
+First, NMF is NP-hard in general. \\
+For this reason, optimization schemes we see in the current NMF-based blind HU developments are rather pragmatic.
 
-Second, NMF may not guarantee solution uniqueness.
-This is a serious issue to the blind 
-HU application, 
-since it means that an NMF solution may not necessarily 
-be the true endmembers and abundances, 
-even in the noiseless case.
+Second, NMF may not guarantee solution uniqueness. \\
+This is a serious issue to the blind HU application, since it means that an NMF solution may not necessarily be the true endmembers and abundances, even in the noiseless case. \\
 
-In blind HU, NMF is modified to fit 
-the problem better. For this, we use regularizers 
-on $\bs{A}$ and $\bs{S}$.
+In blind HU, NMF is modified to fit the problem better. For this, we use regularizers on $\bs{A}$ and $\bs{S}$.
 
 \medskip
 
@@ -1179,53 +1165,42 @@ A general formulation is:
     + \mu \cdot h(\bs{S})$
 \end{center}
 
-Here, $g$ and $h$
-are regularizers, and
-$ \lambda , \mu > 0 $  are some constants.
+Here, $g$ and $h$ are regularizers, and $\lambda , \mu > 0$  are some constants. \\
+
+\newpage
 
 Some regularizers are: 
 
 \begin{enumerate}
-    \item Abundance regularizer: \\ In reality, a given
-spectral signature is usually composed of a limited number of
-materials in a hyperspectral scene, and hence the abundance
-regularization should be selected to be sparsity-prompting. We impose sparsity constraints on the $\ell_1$ norm of the columns of $\bs{S}$. 
+\item Abundance regularizer:
+    
+In reality, a given spectral signature is usually composed of a limited number of materials in a hyperspectral scene, and hence the abundance regularization should be selected to be sparsity-prompting. We impose sparsity constraints on the $\ell_1$ norm of the columns of $\bs{S}$. 
 
 We modify the general equation as: 
 
-$g(\bs{A})=0$ and 
-$h(\bs{S}) = \displaystyle \sum_{i,j} | S_{i,j} | $
+$g(\bs{A})=0$ and $h(\bs{S}) = \displaystyle \sum_{i,j} | S_{i,j} | $
 
 \item The $L_{1/2}$ regularizer: 
 
- The $L_{1/2}$ regularizer is an
-alternative to the $L_{1}$ counterpart. The $L_{1/2}$
-regularizer is a sparsity-promoting function. Furthermore,
-the $L_{1/2}$ regularizer not only can provide sparse solutions close
-to those yielded when $L_{0}$ is used but is also computationally
-efficient.
+The $L_{1/2}$ regularizer is an alternative to the $L_{1}$ counterpart. The $L_{1/2}$ regularizer is a sparsity-promoting function. Furthermore, the $L_{1/2}$ regularizer not only can provide sparse solutions close to those yielded when $L_{0}$ is used but is also computationally efficient.
 
 We modify the general equation as: 
 
-$g(\bs{A})=0$ and 
-$h(\bs{S}) = \norm{S}_{1/2} = 
-\displaystyle \sum_{k,n=1}^{K,N} \bs{s}_n(k)^{1/2}
-$
+$g(\bs{A})=0$ and $h(\bs{S}) = \norm{S}_{1/2} = \displaystyle \sum_{k,n=1}^{K,N} \bs{s}_n(k)^{1/2}$
 
 \item Minimum Volume Regularizer: 
 
-Although we see many choices with the regularizers, the philosophies 
-behind the choices follow a few core principles. For the endmember regularizer $g$ , the principle can be
-traced back to Minimum Volume in Convex Geometry. A classical example is minimum
-volume constrained NMF. Here, we modify the general equation as: 
+Although we see many choices with the regularizers, the philosophies behind the choices follow a few core principles. For the endmember regularizer $g$ , the principle can be traced back to Minimum Volume in Convex Geometry. A classical example is minimum volume constrained NMF. Here, we modify the general equation as: 
 
-
-$g(\bs{A})= (vol(B))^2
-$ and 
-$h(\bs{S}) = 0$
+$g(\bs{A})= (vol(B))^2$ and $h(\bs{S}) = 0$
 
 Here, $vol(B)$ is the simplex volume corresponding to A. (In geometry, a simplex is a generalization of the notion of a triangle or tetrahedron to arbitrary dimensions.)
 
+\item Minimum Sum of differences:
+
+$vol(B)$ is non-convex. Iterated constrained endmember (ICE) and sparsity promoting ICE (SPICE) avoid this issue by replacing $(vol(B))^2$ with a convex surrogate. \\
+Convex surrogate is a convex function easy to optimize using conventional methods which acts as a proxy for the actual loss we wanted to minimize in the first place. \\
+One such convex surrogate is the sum of differences between vertices, $g(A) = \sum_{i=1}^{N-1} \sum_{j=i+1}^{N} || \bs{a_i} - \bs{a_j} ||_2^2$
 
 \end{enumerate}
 
